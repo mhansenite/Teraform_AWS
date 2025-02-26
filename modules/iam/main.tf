@@ -96,6 +96,11 @@ resource "aws_iam_role" "create_roles" {
   path        = "/"
   description = "${var.master.convention}-${each.value.name}-role"
   assume_role_policy = file("../configs/roles/${each.value.name}.json")
-  managed_policy_arns  = ["arn:aws:iam::aws:policy/service-role/${each.value.policy}"]
+}
+
+resource "aws_iam_role_policy_attachment" "role_policy_attach" {
+  for_each = { for k, v in local.role_policy_map : k => v if var.permissions.iam_roles_enabled }
+  role       = aws_iam_role.create_roles[each.key].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/${each.value.policy}"
 }
 

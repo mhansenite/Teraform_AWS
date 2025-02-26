@@ -154,15 +154,15 @@ output "working" {
   value = data.aws_subnets.selected
 }
 
-# resource "aws_db_subnet_group" "database_subnets" {
-#     for_each = {for k, v in local.subnet_set: k=> v if v.workspace == terraform.workspace || v.subnet_zones == "DB"? "true":"false"}
+resource "aws_db_subnet_group" "database_subnets" {
+    for_each = {for k, v in local.subnet_set: k=> v if v.workspace == terraform.workspace || v.subnet_zones == "DB"? "true":"false"}
 
-#     name       = lower("${each.value.workspace}-${var.master.convention}-db-zone_${each.value.name}")
-#     description = "DatabaseZone for ${each.value.workspace}-${var.master.convention}-${each.value.name}"
-#     subnet_ids = [resource.aws_subnet.resource_subnet[each.value.subnet_key].id]
+    name       = lower("${each.value.workspace}-${var.master.convention}-db-zone_${each.value.name}")
+    description = "DatabaseZone for ${each.value.workspace}-${var.master.convention}-${each.value.name}"
+    subnet_ids = [resource.aws_subnet.resource_subnet[each.value.subnet_key].id]
 
-#     tags = {
-#         Name = "${each.value.workspace}-${var.master.convention}-db-zone_${each.value.name}-SN"
-#     }
-#     depends_on = [ aws_subnet.resource_subnet ]
-# }
+    tags = {
+        Name = "${each.value.workspace}-${var.master.convention}-db-zone_${each.value.name}-SN"
+    }
+    depends_on = [ aws_subnet.resource_subnet ]
+}
